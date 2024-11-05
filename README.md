@@ -24,7 +24,7 @@ Theres a few things to keep in mind when using this plugin.
 1. The plugin only works in `administrative` stacks.
 2. The plugin does **not** work with autoattached contexts, the context **must** be attached with a `spacelift_context_attachment` resource.
 3. If the stack id, or context id is unknown until after apply, the plugin will not work. This is because the plugin needs to know the stack id and context id to trigger the stack.
-  - This limitation may change in the future.
+    - This limitation may change in the future.
 
 <!-- BEGIN_TF_DOCS -->
 ## Example
