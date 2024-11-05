@@ -46,4 +46,5 @@ resource "spacelift_environment_variable" "domain" {
   context_id = spacelift_context.this.id
   name       = "SPACELIFT_DOMAIN"
   value      = var.spacelift_domain
+  write_only = false
 }
