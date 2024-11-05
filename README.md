@@ -1,15 +1,22 @@
-# Plugin Stack Trigger
+# Plugin Context Trigger
 
-This module adds the "stack trigger" plugin to your Spacelift account.
-It works by analyzing the after state of an administrative stack, if there are changes to a `spacelift_context`,
-`spacelift_environment_variable` or `spacelift_mounted_file` (IE. you change anything about a context) and that context is explicitly 
-attached with a `spacelift_context_attachment` resource, it will find that resource and trigger the stack it is attached to.
+This module adds the `Context Trigger` plugin to your Spacelift account.
+It will trigger stacks that are using an explicitly attached context when that context changes.
+
+How it works:
+1. Analyzes the after state of an administrative stack.
+2. Determines if there are changes to a `spacelift_context`, `spacelift_environment_variable` or `spacelift_mounted_file` (all resources that can effect a context).
+3. Determines if that context is explicitly attached with a `spacelift_context_attachment` resource.
+4. If the above conditions are all satisfied, if it will the correct stack that is attached via the context attachment and triggers a run against it.
 
 ## Usage
 
 1. Spin up the module (see examples below)
 2. Add the `trigger_attached_contexts_stacks` label to any administrative stacks that manage contexts and their attachments.
 3. When a context changes that is managed by the stack with that label, any stacks using that context will be triggered.
+
+(See below screenshot, under `Apply complete!`)  
+![screenshot.png](screenshot.png)
 
 ## Gotchyas
 
