@@ -87,7 +87,7 @@ mutation {{
             print(f"Error: {resp}")
         else:
             run_id = resp['data']['runResourceCreate']
-            print(f"DONE: https://{os.environ['SPACELIFT_DOMAIN']}/stack/{stack_id}/run/{run_id}")
+            print(f"DONE: {os.environ['SPACELIFT_DOMAIN']}/stack/{stack_id}/run/{run_id}")
 
 
 stacks = find_effected_stacks()
