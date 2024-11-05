@@ -5,9 +5,9 @@ It will trigger stacks that are using an explicitly attached context when that c
 
 How it works:
 1. Analyzes the after state of an administrative stack.
-2. Determines if there are changes to a `spacelift_context`, `spacelift_environment_variable` or `spacelift_mounted_file` (all resources that can effect a context).
+2. Determines if there are changes to a `spacelift_context` or, if attached to a context, changes to a `spacelift_environment_variable` / `spacelift_mounted_file`.
 3. Determines if that context is explicitly attached with a `spacelift_context_attachment` resource.
-4. If the above conditions are all satisfied, if it will the correct stack that is attached via the context attachment and triggers a run against it.
+4. If the above conditions are all satisfied, it will determine what stacks are attached via the `spacelift_context_attachment` resource and then trigger them.
 
 ## Usage
 
