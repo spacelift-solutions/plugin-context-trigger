@@ -49,8 +49,4 @@ module "ec2_worker_pool_stack" {
 | <a name="input_name"></a> [name](#input\_name) | Name of the context | `string` | `"plugin-context-trigger"` | no |
 | <a name="input_space_id"></a> [space\_id](#input\_space\_id) | ID of the space | `string` | `"root"` | no |
 | <a name="input_spacelift_domain"></a> [spacelift\_domain](#input\_spacelift\_domain) | fqdn of the spacelift instance (https://spacelift-solutions.app.spacelift.io) | `string` | n/a | yes |
-
-## Outputs
-
-No outputs.  
 <!-- END_TF_DOCS -->
