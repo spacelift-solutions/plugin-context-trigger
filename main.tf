@@ -14,14 +14,21 @@ resource "spacelift_context" "this" {
   space_id = var.space_id
 
   after_apply = [
-    "python3 /mnt/workspace/trigger_stacks.py"
+    "python /mnt/workspace/space.py start trigger_attached_contexts_stacks"
   ]
 }
 
 resource "spacelift_mounted_file" "this" {
   context_id    = spacelift_context.this.id
-  relative_path = "trigger_stacks.py"
-  content       = filebase64("${path.module}/trigger_stacks.py")
+  relative_path = "trigger_attached_contexts_stacks.py"
+  content       = filebase64("${path.module}/trigger_attached_contexts_stacks.py")
+  write_only    = false
+}
+
+resource "spacelift_mounted_file" "spacepy" {
+  context_id    = spacelift_context.this.id
+  relative_path = "space.py"
+  content       = filebase64("${path.module}/space.py")
   write_only    = false
 }
 
@@ -31,3 +38,4 @@ resource "spacelift_environment_variable" "domain" {
   value      = var.spacelift_domain
   write_only = false
 }
+    
