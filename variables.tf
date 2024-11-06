@@ -1,7 +1,7 @@
 variable "name" {
   type        = string
   description = "Name of the context"
-  default     = "plugin-context-trigger"
+  default     = "trigger_attached_contexts_stacks"
 }
 
 variable "space_id" {

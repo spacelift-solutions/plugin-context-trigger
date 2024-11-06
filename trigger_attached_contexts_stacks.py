@@ -1,10 +1,5 @@
 import os
-import urllib.request
-import json
-
-this_run_id = os.environ["TF_VAR_spacelift_run_id"]
-start_color = "\033[36m"
-end_color = "\033[0m"
+from space import SpacePy
 
 def determine_actions_match(actions: list[str], match: list[str]):
     return all(action in actions for action in match)
@@ -16,10 +11,7 @@ def determine_after_state(resource: dict, key: str):
         return None
 
 
-def find_effected_stacks():
-    with open("spacelift.plan.json") as f:
-        plan = json.load(f)
-
+def find_effected_stacks(plan):
     resources_to_watch = [
         "spacelift_mounted_file",
         "spacelift_environment_variable",
@@ -58,39 +50,29 @@ def find_effected_stacks():
 
     return effected_stacks
 
-def trigger_stack(stack_id):
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {os.environ['SPACELIFT_API_TOKEN']}"
+def trigger_stack(stack_id, logger, query_api):
+
+    mutation_query = """
+    mutation Run($stackID: ID!) {
+        runResourceCreate(stack: $stackID, proposed: false) {}
+    }
+    """
+
+    variables = {
+        "stackID": stack_id
     }
 
-    mutation_query = f"""
-mutation {{
-  runResourceCreate(stack: \"{stack_id}\", proposed: false) {{}}
-}}
-"""
+    logger.log(f"Triggering stack {stack_id}...")
 
-    data = {
-        "query": mutation_query,
-    }
+    resp = query_api(mutation_query, variables)
 
-    print(f"{start_color}[{this_run_id}] {end_color}Triggering stack {stack_id}...", end=" ")
+    if "data" in resp and "runResourceCreate" in resp["data"]:
+        run_id = resp['data']['runResourceCreate']
+        logger.log(f"DONE: {os.environ['SPACELIFT_DOMAIN']}/stack/{stack_id}/run/{run_id}")
 
-    req = urllib.request.Request(f"{os.environ['SPACELIFT_DOMAIN']}/graphql", json.dumps(data).encode('utf-8'), headers)
-    with urllib.request.urlopen(req) as response:
-        resp = json.loads(response.read().decode('utf-8'))
-
-    if "data" not in resp:
-        print(f"Error: {resp}")
-    else:
-        if "runResourceCreate" not in resp["data"]:
-            print(f"Error: {resp}")
-        else:
-            run_id = resp['data']['runResourceCreate']
-            print(f"DONE: {os.environ['SPACELIFT_DOMAIN']}/stack/{stack_id}/run/{run_id}")
-
-
-stacks = find_effected_stacks()
-for stack in stacks:
-    trigger_stack(stack)
+@SpacePy
+def main(logger, query_api, plan_json):
+    stacks = find_effected_stacks(plan_json)
+    for stack in stacks:
+        trigger_stack(stack, logger, query_api)
 
